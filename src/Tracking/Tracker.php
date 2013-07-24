@@ -44,11 +44,11 @@ class Tracker {
 	 */
 	protected $mechanism;
 
-	/**
-	 * Constructor.
-	 *
-	 * @return void
-	 */
+    /**
+     * Constructor.
+     *
+     * @return Tracker
+     */
 	private function __construct()
 	{
 		// Default max save number.
@@ -64,13 +64,11 @@ class Tracker {
 		};
 	}
 
-	/**
-	 * Get singleton instance
-	 *
-	 * @param  int $maxSave
-	 * @param  int $defaultOrder
-	 * @return Tracker
-	 */
+    /**
+     * Get singleton instance
+     *
+     * @return Tracker
+     */
 	public static function instance()
 	{
 		if(! static::$instance) static::$instance = new static();
@@ -112,11 +110,12 @@ class Tracker {
 		}
 	}
 
-	/**
-	 * Set mechanism for generating strings to session.
-	 *
-	 * @return void
-	 */
+    /**
+     * Set mechanism for generating strings to session.
+     *
+     * @param  callable $mechanism
+     * @return void
+     */
 	public function setMechanism( Closure $mechanism )
 	{
 		$this->mechanism = $mechanism;
@@ -130,6 +129,8 @@ class Tracker {
 	 */
 	protected function add( $string )
 	{
+		if(! $string) return;
+
 		$all = $this->getAll();
 
 		// If it was equal to the last request so stop
@@ -152,7 +153,7 @@ class Tracker {
 	 */
 	public function forceAdd( $string )
 	{
-		return $this->add( $string );
+        $this->add( $string );
 	}
 
 	/**
@@ -213,12 +214,13 @@ class Tracker {
 		$this->putToSession(array());
 	}
 
-	/**
-	 * Get key for the given string.
-	 *
-	 * @param  string $string
-	 * @return int
-	 */
+    /**
+     * Get key for the given string.
+     *
+     * @param  string $string
+     * @param  array  $except
+     * @return int
+     */
 	protected function getKey( $string, array $except = array() )
 	{
 		$newAll = array_diff($this->getAll(), $except);
